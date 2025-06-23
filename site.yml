@@ -1,7 +1,0 @@
----
-- name: Testar ping em todos os hosts
-  hosts: all
-  gather_facts: false
-  tasks:
-    - name: Pingar os hosts
-      ansible.builtin.ping:
