@@ -4,15 +4,15 @@
   become: true
   tasks:
 
-  - name: update cache
-    apt:
-      update_cache: yes
 
   - name: teste
-    apt:
+    package:
       name:
         - neofetch
         - btop
         - curl
       state: latest
+      update_cache: yes
+
+
   
