@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: teste
+    apt:
+      name:
+        - neofetch
+        - btop
+        - curl
+  
