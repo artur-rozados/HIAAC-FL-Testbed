@@ -14,7 +14,7 @@
       state: latest
       update_cache: yes
 
-  - name: upgrade:
+  - name: upgrade
     apt:
       upgrade: dist
 
