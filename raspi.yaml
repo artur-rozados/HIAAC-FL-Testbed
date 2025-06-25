@@ -13,5 +13,8 @@
         - curl
       state: latest
       update_cache: yes
+
+  - name: upgrade:
+    apt:
       upgrade: dist
 
