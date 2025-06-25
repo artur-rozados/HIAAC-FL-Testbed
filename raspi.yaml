@@ -6,7 +6,7 @@
 
 
   - name: teste
-    package:
+    apt:
       name:
         - neofetch
         - btop
