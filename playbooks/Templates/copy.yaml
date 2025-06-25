@@ -3,7 +3,7 @@
 - hosts: all  # Roda o Playbook em todos os IPs do inventário
   become: true
   tasks:
-    # - name: Copiar arquivo de configuração
+    # - name: Copiar arquivo de configuração do server com Ansible para os hosts
     #   copy:
     #     src: caminho/local/do/arquivo
     #     dest: /caminho/de/destino/no/host
