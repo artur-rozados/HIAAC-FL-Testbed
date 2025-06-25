@@ -1,6 +1,6 @@
 ---
 
-- hosts: Raspberry Pi
+- hosts: Raspberry_Pi
   become: true
   tasks:
 
