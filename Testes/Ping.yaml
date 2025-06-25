@@ -1,0 +1,8 @@
+---
+
+- hosts: all  # Roda o Playbook em todos os IPs do inventário
+  tasks:
+
+
+  - name: Ping
+    ping:

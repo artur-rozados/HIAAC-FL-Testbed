@@ -1,10 +1,10 @@
-#Hosts
+# Hosts
 
-[Raspberry_Pi]
+[Raspberry_Pi] # IPs das Pis
 10.10.10.201
 10.10.10.202
 10.10.10.203
 10.10.10.204
 10.10.10.205
 
-[Jetsons]
+[Jetsons] # IPs das Jetsons
