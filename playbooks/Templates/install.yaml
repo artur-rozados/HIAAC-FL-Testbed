@@ -1,0 +1,12 @@
+---
+
+- hosts: all  # Roda o Playbook em todos os IPs do inventário
+  become: true
+  tasks:
+    # - name: Atualizar cache do apt e instalar pacotes essenciais
+    #   apt:
+    #     update_cache: yes
+    #     name:
+    #       - pacote1
+    #       - pacote2
+    #     state: present

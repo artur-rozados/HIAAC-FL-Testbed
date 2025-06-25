@@ -1,0 +1,12 @@
+---
+
+- hosts: all  # Roda o Playbook em todos os IPs do inventário
+  become: true
+  tasks:
+    # - name: Copiar arquivo de configuração
+    #   copy:
+    #     src: caminho/local/do/arquivo
+    #     dest: /caminho/de/destino/no/host
+    #     owner: root
+    #     group: root
+    #     mode: '0644'

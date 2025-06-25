@@ -1,0 +1,7 @@
+---
+
+- hosts: all  # Roda o Playbook em todos os IPs do inventário
+  become: true
+  tasks:
+    # - name: Testar conexão com os hosts
+    #   ping:

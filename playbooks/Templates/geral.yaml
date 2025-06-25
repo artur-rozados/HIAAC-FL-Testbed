@@ -1,0 +1,27 @@
+---
+
+- hosts: all  # Roda o Playbook em todos os IPs do inventário
+  become: true
+  tasks:
+    # - name: Atualizar cache do apt e instalar pacotes essenciais
+    #   apt:
+    #     update_cache: yes
+    #     name:
+    #       - pacote1
+    #       - pacote2
+    #     state: present
+
+    # - name: Copiar arquivo de configuração
+    #   copy:
+    #     src: caminho/local/do/arquivo
+    #     dest: /caminho/de/destino/no/host
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+
+    # - name: Testar conexão com os hosts
+    #   ping:
+
+    # - name: Exibir mensagem de sucesso
+    #   debug:
+    #     msg: "Setup concluído!"
