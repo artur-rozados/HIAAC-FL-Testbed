@@ -1,0 +1,16 @@
+---
+
+- hosts: Raspberry Pi
+  become: true
+  tasks:
+
+
+  - name: teste
+    package:
+      name:
+        - neofetch
+        - btop
+        - curl
+      state: latest
+      update_cache: yes
+
