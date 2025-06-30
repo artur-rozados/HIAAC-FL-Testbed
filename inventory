@@ -1,16 +1,34 @@
-# Hosts
+# =======================================================
+#          Definição de Variáveis para cada Grupo
+# =======================================================
 
-[Raspberry_Pi] # IPs das Pis
+[Raspberry_Pi:vars]
+# Para as Pis, o usuário será 'pi'
+ansible_user=pi
+
+[Jetsons:vars]
+# A regra para as Jetsons continua a mesma: o usuário é o próprio nome
+ansible_user="{{ inventory_hostname }}"
+
+
+# =======================================================
+#               Lista de Hosts em cada Grupo
+# =======================================================
+
+[Raspberry_Pi]
+# Para as Pis, podemos usar o IP
 10.10.10.201
 10.10.10.202
 10.10.10.203
 10.10.10.204
 10.10.10.205
 
-[Jetsons] # IPs das Jetsons
-10.10.10.231
-10.10.10.232
-10.10.10.233
-10.10.10.234
-10.10.10.235
-10.10.10.236
+[Jetsons]
+# Para as Jetsons, usamos um NOME e ensinamos o IP ao Ansible
+# NOME     IP_PARA_CONECTAR
+jetson1             ansible_host=10.10.10.231
+jetson2             ansible_host=10.10.10.232
+jetson3             ansible_host=10.10.10.233
+jetson4             ansible_host=10.10.10.234
+jetson5             ansible_host=10.10.10.235
+jetson6             ansible_host=10.10.10.236
