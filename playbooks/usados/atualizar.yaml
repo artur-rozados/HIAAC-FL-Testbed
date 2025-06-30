@@ -4,6 +4,8 @@
 - hosts: Jetsons
   # Não precisamos coletar fatos (informações da máquina) para esta operação,
   # o que a torna mais rápida e robusta em sistemas novos.
+  become: yes
+
 
   tasks:
     - name: Atualiza sistemas
