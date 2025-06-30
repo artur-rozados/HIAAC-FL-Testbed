@@ -1,6 +1,6 @@
 ---
 
-- hosts: all  # Roda o Playbook em todos os IPs do inventário
+- hosts: Jetsons  # Roda o Playbook em todos os IPs do inventário
   tasks:
 
 
