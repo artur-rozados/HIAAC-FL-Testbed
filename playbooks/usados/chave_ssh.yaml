@@ -1,0 +1,24 @@
+# Esse playbook add a sua public key para ter uma conexão ssh sem senhas
+
+---
+- hosts: Jetsons
+  # Não precisamos coletar fatos (informações da máquina) para esta operação,
+  # o que a torna mais rápida e robusta em sistemas novos.
+  gather_facts: no
+
+  tasks:
+    - name: Garantir que a chave SSH pública do administrador esteja no host remoto
+      ansible.posix.authorized_key:
+        # Instala a chave para o usuário de conexão (ex: 'jetson1', 'jetson2')
+        user: "{{ ansible_user }}"
+        
+        # Garante que a chave esteja presente no arquivo
+        state: present
+        
+        # Lê o conteúdo da sua chave pública local e a envia para o host
+        # ATENÇÃO: Verifique se o caminho para sua chave .pub está correto!
+        key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+      # A tag 'always' é útil para rodar apenas esta tarefa, se necessário
+      tags:
+        - ssh_key
