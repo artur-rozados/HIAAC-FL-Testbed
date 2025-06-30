@@ -1,0 +1,26 @@
+---
+
+- hosts: Raspberry_Pi  # Roda o Playbook em todos os IPs do inventário
+  become: yes
+
+  tasks:
+
+  - name: Garantir que o Git está instalado
+    ansible.builtin.apt:
+      name: git
+      state: present
+      update_cache: yes
+    tags:
+      - prerequisites
+
+
+  - name: Clonar repositório
+    ansible.builtin.git:
+      repo: "https://github.com/artur-rozados/Ansible-H.IAAC.git"
+      dest: "/home/pi/teste"
+      version: main  # Garante que o repositório está no branch 'main' mais recente
+      force: yes     # Força o checkout, descartando alterações locais nas Pis
+      update: yes    # Garante que o 'git pull' será executado se o repo já existir
+    become_user: pi  # Executa esta tarefa específica como o usuário 'pi'
+    tags:
+      - git
