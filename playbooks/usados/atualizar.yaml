@@ -1,0 +1,16 @@
+# Esse playbook dá apt update e upgrade
+
+---
+- hosts: Jetsons
+  # Não precisamos coletar fatos (informações da máquina) para esta operação,
+  # o que a torna mais rápida e robusta em sistemas novos.
+
+  tasks:
+    - name: Atualiza sistemas
+      apt:
+        update_cache: yes
+        upgrade: dist
+        name:
+          - neofetch
+        state: present
+ 
