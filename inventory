@@ -12,6 +12,8 @@ ansible_vault_files=['vault.yml']
 # Para as Pis, o usuário será 'pi'
 ansible_user=pi
 
+ansible_become_pass="{{ pi_sudo_password }}"
+
 [Jetsons:vars]
 # A regra para as Jetsons continua a mesma: o usuário é o próprio nome
 ansible_user="{{ inventory_hostname }}"
