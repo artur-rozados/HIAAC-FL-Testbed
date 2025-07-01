@@ -2,6 +2,8 @@
 - hosts: Jetsons  # Roda o Playbook em todas as Jetsons
   become: yes
 
+
+
   tasks:
 
   - name: Garantir que o Git está instalado

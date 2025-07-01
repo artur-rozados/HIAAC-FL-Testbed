@@ -3,6 +3,10 @@
 - hosts: Raspberry_Pi  # Roda o Playbook em todas as Pis
   become: yes
 
+  # Carrega o arquivo vault a partir do caminho correto
+  vars_files:
+    - "{{ playbook_dir }}/../../vault.yml"
+
   tasks:
 
   - name: Garantir que o Git está instalado
