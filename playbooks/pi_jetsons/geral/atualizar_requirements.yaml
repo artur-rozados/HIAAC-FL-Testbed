@@ -17,7 +17,8 @@
       ansible.builtin.apt:
         upgrade: dist
 
-    - name: Garantir que o pacote neofetch esteja instalado
+    - name: Instalar requirements 
       ansible.builtin.apt:
-        name: neofetch
+        name:
+          - neofetch
         state: present
