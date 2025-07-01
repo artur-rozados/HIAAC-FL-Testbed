@@ -22,7 +22,7 @@
       # A MÁGICA ACONTECE AQUI:
       # Constrói o caminho para o diretório home do usuário correto
       # Ex: para jetson1, será /home/jetson1/Ansible-H.IAAC
-      dest: "/home/{{ ansible_user }}/Ansible-H.IAAC"
+      dest: "{{ ansible_user_dir }}/Ansible-H.IAAC"
       version: main  # Garante que o repositório está no branch 'main' mais recente
       force: yes     # Força o checkout, descartando alterações locais
       update: yes    # Garante que o 'git pull' será executado se o repo já existir
