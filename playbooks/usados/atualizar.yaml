@@ -1,18 +1,23 @@
-# Esse playbook dá apt update e upgrade
-
 ---
 - hosts: Jetsons
-  # Não precisamos coletar fatos (informações da máquina) para esta operação,
-  # o que a torna mais rápida e robusta em sistemas novos.
   become: yes
 
+  # Carrega o arquivo vault a partir do caminho correto
+  vars_files:
+    - "{{ playbook_dir }}/../../vault.yml"
 
   tasks:
-    - name: Atualiza sistemas
-      apt:
+    - name: Atualizar o cache de pacotes (apt update)
+      ansible.builtin.apt:
         update_cache: yes
+      # Boa prática para não mostrar "mudança" toda vez
+      changed_when: false 
+
+    - name: Atualizar todos os pacotes do sistema (apt upgrade)
+      ansible.builtin.apt:
         upgrade: dist
-        name:
-          - neofetch
+
+    - name: Garantir que o pacote neofetch esteja instalado
+      ansible.builtin.apt:
+        name: neofetch
         state: present
- 

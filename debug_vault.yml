@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  # Diz a este playbook para carregar as variáveis do ficheiro vault
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Imprimir a variável 'jetson_passwords' para verificação
+      ansible.builtin.debug:
+        var: jetson_passwords

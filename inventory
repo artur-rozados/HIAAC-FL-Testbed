@@ -1,3 +1,9 @@
+# Vault
+
+[all:vars]
+ansible_vault_files=['vault.yml']
+
+
 # =======================================================
 #          Definição de Variáveis para cada Grupo
 # =======================================================
@@ -9,6 +15,12 @@ ansible_user=pi
 [Jetsons:vars]
 # A regra para as Jetsons continua a mesma: o usuário é o próprio nome
 ansible_user="{{ inventory_hostname }}"
+
+# REGRA 2: A senha de conexão é buscada no dicionário 'jetson_passwords' do Vault.
+ansible_ssh_pass="{{ jetson_passwords[inventory_hostname] }}"
+
+# REGRA 3: A senha do sudo também vem do mesmo dicionário no Vault.
+ansible_become_pass="{{ jetson_passwords[inventory_hostname] }}"
 
 
 # =======================================================
