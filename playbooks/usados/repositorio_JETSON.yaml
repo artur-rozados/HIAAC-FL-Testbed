@@ -2,7 +2,8 @@
 - hosts: Jetsons  # Roda o Playbook em todas as Jetsons
   become: yes
 
-
+  vars_files:
+    - "{{ playbook_dir }}/../../vault.yml"
 
   tasks:
 
