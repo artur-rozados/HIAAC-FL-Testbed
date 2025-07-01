@@ -40,7 +40,7 @@ ansible_become_pass="{{ jetson_passwords[inventory_hostname] }}"
 [Jetsons]
 # Para as Jetsons, usamos um NOME e ensinamos o IP ao Ansible
 # NOME     IP_PARA_CONECTAR
-jetson1             ansible_host=10.10.10.231
+jetson              ansible_host=10.10.10.231
 jetson2             ansible_host=10.10.10.232
 jetson3             ansible_host=10.10.10.233
 jetson4             ansible_host=10.10.10.234
