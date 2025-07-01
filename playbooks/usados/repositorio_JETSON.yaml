@@ -6,25 +6,25 @@
     - "{{ playbook_dir }}/../../vault.yml"
 
   tasks:
+    - name: Garantir que o Git está instalado
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+        
+    - name: Descobrir o diretório home do usuário alvo
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+      register: user_info
+      # Não precisamos de 'sudo' para apenas ler informações do usuário
+      become: no 
 
-  - name: Garantir que o Git está instalado
-    ansible.builtin.apt:
-      name: git 
-      state: present # Verifica que o git está instalado, e instala se não estiver
-      update_cache: yes
-    tags:
-      - prerequisites
-
-
-  - name: Clonar ou atualizar o repositório no diretório home do usuário
-    ansible.builtin.git:
-      repo: "https://github.com/artur-rozados/Ansible-H.IAAC.git"
-      dest: "{{ (lookup('getent', 'passwd')[ansible_user].4) }}/Ansible-H.IAAC"
-      version: main  # Garante que o repositório está no branch 'main' mais recente
-      force: yes     # Força o checkout, descartando alterações locais
-      update: yes    # Garante que o 'git pull' será executado se o repo já existir
-    # E AQUI TAMBÉM:
-    # Executa esta tarefa específica como o usuário correto para cada host
-    become_user: "{{ ansible_user }}"
-    tags:
-      - git
+    - name: Clonar ou atualizar o repositório no diretório home correto
+      ansible.builtin.git:
+        repo: "https://github.com/artur-rozados/Ansible-H.IAAC.git"
+        # Usamos a variável 'user_info' registrada na tarefa anterior
+        dest: "{{ user_info.home }}/Ansible-H.IAAC"
+        version: main
+        force: yes
+        update: yes
+      become_user: "{{ ansible_user }}"
