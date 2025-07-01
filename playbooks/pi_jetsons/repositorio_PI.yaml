@@ -5,7 +5,7 @@
 
   # Carrega o arquivo vault a partir do caminho correto
   vars_files:
-    - "{{ playbook_dir }}/../../vault.yml"
+    - "{{ playbook_dir }}/../../../vault.yml"
 
   tasks:
 
