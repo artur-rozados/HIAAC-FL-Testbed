@@ -2,7 +2,7 @@
   hosts: server
   become: false
   vars:
-    results_file: /home/andre/anstart/dados/dqn_res.csv
+    results_file: /home/andre/anstart/dados/log_reg.csv
     results_dir: /home/andre/anstart/dados
   tasks:
     - name: Ensure results directory exists
