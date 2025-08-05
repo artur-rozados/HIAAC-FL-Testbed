@@ -1,6 +1,9 @@
 ---
 
 - hosts: all  # Roda o Playbook em todos os IPs do inventário
+  vars_files:
+    - "{{ playbook_dir }}/../../vault.yml"
+
   tasks:
 
 
