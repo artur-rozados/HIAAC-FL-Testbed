@@ -1,5 +1,5 @@
 ---
-- hosts: Jetsons
+- hosts: all
   become: yes
 
   # Carrega o arquivo vault a partir do caminho correto
