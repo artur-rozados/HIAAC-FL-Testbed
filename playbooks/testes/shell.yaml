@@ -1,0 +1,43 @@
+---
+- hosts: Raspberry_Pi  # Roda o Playbook em todas as Pis
+  become: yes
+  vars_files:
+    - "{{ playbook_dir }}/../../../vault.yml"
+
+  tasks:
+    - name: Verificar se o Python 3.4 está instalado
+      command: python3.4 --version
+      register: python_version
+      ignore_errors: yes  # Não falha se o Python não estiver instalado
+
+    - name: Instalar Python 3.4 caso não esteja presente
+      apt:
+        name: python3.4
+        state: present
+      when: python_version.rc != 0
+
+    - name: Garantir que o pip esteja instalado
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Instalar virtualenv
+      pip:
+        name: virtualenv
+        executable: pip3
+      when: python_version.rc == 0  # Só instala se o Python 3.4 estiver disponível
+
+    - name: Criar o ambiente virtual em /user/home/venvs/myenv
+      command:
+        cmd: virtualenv /user/home/venvs/myenv -p python3.4
+        creates: "/user/home/venvs/myenv"
+      when: python_version.rc == 0  # Só cria se o Python 3.4 estiver disponível
+
+    - name: Ativar o ambiente virtual
+      shell: source /user/home/venvs/myenv/bin/activate
+      ignore_errors: yes  # Ignorar erros, já que não precisa continuar após a criação
+
+    - name: Instalar pacotes necessários no venv
+      pip:
+        name: requests  # exemplo de pacote
+        virtualenv: /user/home/venvs/myenv
