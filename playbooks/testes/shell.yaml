@@ -5,14 +5,14 @@
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
-    - name: Verificar se o Python 3.4 está instalado
-      command: python3.4 --version
+    - name: Verificar se o Python 3.11 está instalado
+      command: python3.11 --version
       register: python_version
       ignore_errors: yes  # Não falha se o Python não estiver instalado
 
-    - name: Instalar Python 3.4 caso não esteja presente
+    - name: Instalar Python 3.11 caso não esteja presente
       apt:
-        name: python3.4
+        name: python3.11
         state: present
       when: python_version.rc != 0
 
@@ -25,13 +25,13 @@
       pip:
         name: virtualenv
         executable: pip3
-      when: python_version.rc == 0  # Só instala se o Python 3.4 estiver disponível
+      when: python_version.rc == 0  # Só instala se o Python 3.11 estiver disponível
 
     - name: Criar o ambiente virtual em /home/pi/venvs/myenv
       command:
-        cmd: virtualenv /home/pi/venvs/myenv -p python3.4
+        cmd: virtualenv /home/pi/venvs/myenv -p python3.11
         creates: "/home/pi/venvs/myenv"
-      when: python_version.rc == 0  # Só cria se o Python 3.4 estiver disponível
+      when: python_version.rc == 0  # Só cria se o Python 3.11 estiver disponível
 
     - name: Ativar o ambiente virtual
       shell: source /home/pi/venvs/myenv/bin/activate
