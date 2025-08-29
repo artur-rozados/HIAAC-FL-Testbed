@@ -21,23 +21,12 @@
         name: python3-pip
         state: present
 
-    - name: Instalar virtualenv
-      pip:
-        name: virtualenv
-        executable: pip3
-      when: python_version.rc == 0  # Só instala se o Python 3.11 estiver disponível
-
     - name: Criar o ambiente virtual em /home/pi/venvs/myenv
       command:
-        cmd: virtualenv /home/pi/venvs/myenv -p python3.11
-        creates: "/home/pi/venvs/myenv"
-      when: python_version.rc == 0  # Só cria se o Python 3.11 estiver disponível
-
-    - name: Ativar o ambiente virtual
-      shell: source /home/pi/venvs/myenv/bin/activate
-      ignore_errors: yes  # Ignorar erros, já que não precisa continuar após a criação
+        cmd: python3.11 -m venv /home/pi/venvs/myenv
+        creates: "/home/pi/venvs/myenv"  # Cria o venv apenas se ele não existir
 
     - name: Instalar pacotes necessários no venv
       pip:
         name: requests  # exemplo de pacote
-        virtualenv: /home/pi/venvs/myenv
+        virtualenv: /home/pi/venvs/myenv  # Instalar no ambiente virtual
