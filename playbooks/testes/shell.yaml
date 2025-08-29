@@ -21,12 +21,13 @@
         name: python3-pip
         state: present
 
-    - name: Criar o ambiente virtual em /home/pi/venvs/myenv
+    - name: Criar o ambiente virtual no diretório home do usuário
       command:
-        cmd: python3.11 -m venv /home/pi/venvs/myenv
-        creates: "/home/pi/venvs/myenv"  # Cria o venv apenas se ele não existir
+        cmd: "python3.11 -m venv {{ ansible_env.HOME }}/venvs/myenv"
+        creates: "{{ ansible_env.HOME }}/venvs/myenv"  # Cria o venv apenas se ele não existir
 
     - name: Instalar pacotes necessários no venv
       pip:
-        name: requests  # exemplo de pacote
-        virtualenv: /home/pi/venvs/myenv  # Instalar no ambiente virtual
+        name: flwr
+        virtualenv: "{{ ansible_env.HOME }}/venvs/myenv"  # Instalar no ambiente virtual
+
