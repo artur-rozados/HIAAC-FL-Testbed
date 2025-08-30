@@ -1,0 +1,21 @@
+---
+- hosts: Raspberry_Pi
+  become: yes # Usa 'sudo' para criar pastas, se necessário
+  tasks:
+    - name: Garantir que o diretório do cliente exista no Pi
+      file:
+        path: "{{ ansible_env.HOME }}/flower_client"
+        state: directory
+        owner: "{{ ansible_user_id }}" # Garante que o dono da pasta seja o usuário 'pi'
+        group: "{{ ansible_user_id }}"
+        mode: '0755'
+
+    - name: Copiar o arquivo client.py para os Pis
+      copy:
+        # Caminho do arquivo no seu laptop (ajuste se a pasta flower_project não estiver no mesmo nível)
+        src: ../flower_project/client.py
+        # Caminho onde o arquivo será salvo no Pi
+        dest: "{{ ansible_env.HOME }}/flower_client/client.py"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0644' # Permissões de leitura para todos, escrita apenas para o dono
