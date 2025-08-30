@@ -3,26 +3,25 @@
   become: yes
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
-  
+
   tasks:
     - name: Garantir que o diretório do cliente exista no Pi
       file:
-        path: "{{ ansible_env.HOME }}/flower_client"
+        # Caminho explícito para a home do usuário 'pi'
+        path: /home/pi/flower_client
         state: directory
-        # É uma boa prática definir o dono para evitar problemas de permissão
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        # Define 'pi' como o dono, para evitar problemas de permissão
+        owner: pi
+        group: pi
         mode: '0755'
 
     - name: Copiar o arquivo client.py para os Pis
       copy:
-        # CORREÇÃO: Aponta para a pasta TESTBED no seu laptop
+        # Origem no seu laptop
         src: "{{ lookup('env', 'HOME') }}/TESTBED/client.py"
-        
-        # O destino no Pi continua o mesmo
-        dest: "{{ ansible_env.HOME }}/flower_client/client.py"
-        
-        # Define o dono do arquivo como o usuário do Pi
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        # Destino explícito na home do usuário 'pi'
+        dest: /home/pi/flower_client/client.py
+        # Define 'pi' como o dono do arquivo
+        owner: pi
+        group: pi
         mode: '0644'
