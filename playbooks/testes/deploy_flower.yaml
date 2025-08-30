@@ -1,6 +1,10 @@
 ---
 - hosts: Raspberry_Pi
   become: yes # Usa 'sudo' para criar pastas, se necessário
+  vars_files:
+    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+
+
   tasks:
     - name: Garantir que o diretório do cliente exista no Pi
       file:
