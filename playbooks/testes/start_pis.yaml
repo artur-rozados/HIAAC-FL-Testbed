@@ -5,7 +5,6 @@
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
   # Não precisamos de informações do sistema, então 'gather_facts: no' para acelerar
-  gather_facts: no
 
   tasks:
     - name: Iniciar o script do cliente Flower em modo assíncrono
