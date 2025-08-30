@@ -9,20 +9,20 @@
       file:
         path: "{{ ansible_env.HOME }}/flower_client"
         state: directory
-        owner: "{{ ansible_user_id }}" # Garante que o dono da pasta seja o usuário remoto (ex: 'pi')
+        # É uma boa prática definir o dono para evitar problemas de permissão
+        owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: '0755'
 
     - name: Copiar o arquivo client.py para os Pis
       copy:
-        # Usa um caminho absoluto dinâmico a partir do HOME do seu laptop.
-        # Isso funciona independentemente de onde o playbook está localizado.
-        src: "{{ lookup('env', 'HOME') }}/flower_project/client.py"
+        # CORREÇÃO: Aponta para a pasta TESTBED no seu laptop
+        src: "{{ lookup('env', 'HOME') }}/TESTBED/client.py"
         
-        # Usa um caminho absoluto dinâmico para o destino no Raspberry Pi.
+        # O destino no Pi continua o mesmo
         dest: "{{ ansible_env.HOME }}/flower_client/client.py"
         
-        # Garante que o dono do arquivo seja o usuário remoto.
+        # Define o dono do arquivo como o usuário do Pi
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: '0644'
