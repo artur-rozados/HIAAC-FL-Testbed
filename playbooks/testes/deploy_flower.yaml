@@ -1,21 +1,25 @@
 ---
 - hosts: Raspberry_Pi
-  become: yes # Usa 'sudo' para criar pastas, se necessário
-  vars_files:
-    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
-
-
+  become: yes
   tasks:
     - name: Garantir que o diretório do cliente exista no Pi
       file:
         path: "{{ ansible_env.HOME }}/flower_client"
         state: directory
+        owner: "{{ ansible_user_id }}" # Garante que o dono da pasta seja o usuário remoto (ex: 'pi')
+        group: "{{ ansible_user_id }}"
         mode: '0755'
 
     - name: Copiar o arquivo client.py para os Pis
       copy:
-        # Caminho do arquivo no seu laptop (ajuste se a pasta flower_project não estiver no mesmo nível)
-        src: ../flower_project/client.py
-        # Caminho onde o arquivo será salvo no Pi
+        # Usa um caminho absoluto dinâmico a partir do HOME do seu laptop.
+        # Isso funciona independentemente de onde o playbook está localizado.
+        src: "{{ lookup('env', 'HOME') }}/flower_project/client.py"
+        
+        # Usa um caminho absoluto dinâmico para o destino no Raspberry Pi.
         dest: "{{ ansible_env.HOME }}/flower_client/client.py"
-        mode: '0644' # Permissões de leitura para todos, escrita apenas para o dono
+        
+        # Garante que o dono do arquivo seja o usuário remoto.
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0644'
