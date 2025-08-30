@@ -1,0 +1,20 @@
+---
+- hosts: Raspberry_Pi
+  # Não precisamos rodar como root, então 'become: no'
+  become: no
+  vars_files:
+    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+  # Não precisamos de informações do sistema, então 'gather_facts: no' para acelerar
+  gather_facts: no
+
+  tasks:
+    - name: Iniciar o script do cliente Flower em modo assíncrono
+      shell:
+        # 1. Ativa o venv | 2. Roda o script | 3. 'nohup' e '&' mantêm rodando em segundo plano
+        cmd: "source {{ ansible_env.HOME }}/venvs/myenv/bin/activate && nohup python client.py > client.log 2>&1 &"
+        
+        # Muda para o diretório do cliente antes de rodar o comando
+        chdir: "{{ ansible_env.HOME }}/flower_client"
+      
+      # Tarefa assíncrona: "dispare e esqueça"
+      async: 10  # Dê 10 segundos para a tarefa iniciar
