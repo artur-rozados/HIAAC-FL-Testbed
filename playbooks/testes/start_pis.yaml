@@ -1,16 +1,15 @@
 ---
 - hosts: Raspberry_Pi
-  become: no # Correto, pois o script deve rodar como o usuário 'pi'
+  become: no
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
     - name: Iniciar o script do cliente Flower em modo assíncrono
       shell:
-        # Usamos o caminho fixo para o venv e o log
-        cmd: "source /home/pi/venvs/myenv/bin/activate && nohup python client.py > /home/pi/flower_client/client.log 2>&1 &"
+        # CHAMADA DIRETA: Usamos o caminho completo para o Python do venv
+        cmd: "nohup /home/pi/venvs/myenv/bin/python client.py > /home/pi/flower_client/client.log 2>&1 &"
         
-        # Usamos o caminho fixo para o diretório do cliente
         chdir: /home/pi/flower_client
       
       async: 10
