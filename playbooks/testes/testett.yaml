@@ -1,0 +1,9 @@
+---
+- hosts: Raspberry_Pi
+  become: yes
+
+  
+  tasks:
+    - name: Exibir o valor de ansible_env.HOME
+      debug:
+        var: ansible_env.HOME
