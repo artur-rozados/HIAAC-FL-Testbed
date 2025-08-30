@@ -1,35 +1,38 @@
 ---
-- hosts: Raspberry_Pi  # Roda o Playbook em todas as Pis
-  become: yes
+- hosts: Raspberry_Pi
+  become: yes # Necessário para os comandos 'apt'
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
-    - name: Verificar se o Python 3.11 está instalado
-      command: python3.11 --version
-      register: python_version
-      ignore_errors: yes  # Não falha se o Python não estiver instalado
-
-    - name: Instalar Python 3.11 caso não esteja presente
+    - name: Garantir dependências do sistema (Python e Pip)
       apt:
-        name: python3.11
+        name:
+          - python3.11
+          - python3.11-venv
+          - python3-pip
         state: present
-      when: python_version.rc != 0
+        update_cache: yes
 
-    - name: Garantir que o pip esteja instalado
-      apt:
-        name: python3-pip
-        state: present
+    - name: Criar o diretório para os ambientes virtuais
+      file:
+        path: /home/pi/venvs
+        state: directory
+        owner: pi
+        group: pi
+        mode: '0755'
 
-    - name: Criar o ambiente virtual no diretório home do usuário
+    - name: Criar o ambiente virtual 'myenv'
       command:
-        cmd: "python3.11 -m venv {{ ansible_env.HOME }}/venvs/myenv"
-        creates: "{{ ansible_env.HOME }}/venvs/myenv"  # Cria o venv apenas se ele não existir
+        cmd: "python3.11 -m venv /home/pi/venvs/myenv"
+        creates: /home/pi/venvs/myenv/bin/activate
+      become: no # Executa este comando como o usuário 'pi', não como 'root'
 
-    - name: Instalar pacotes necessários no venv
+    - name: Instalar flwr e tensorflow dentro do venv 'myenv'
       pip:
         name:
           - flwr
           - tensorflow
-        virtualenv: "{{ ansible_env.HOME }}/venvs/myenv"  # Instalar no ambiente virtual
+        virtualenv: /home/pi/venvs/myenv
+      become: no # Executa o pip como o usuário 'pi'
 
