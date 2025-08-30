@@ -28,11 +28,15 @@
         creates: /home/pi/venvs/myenv/bin/activate
       become: no # Executa este comando como o usuário 'pi', não como 'root'
 
-    - name: Instalar flwr e tensorflow dentro do venv 'myenv'
+    - name: Instalar flwr e tensorflow (tarefa de longa duração)
       pip:
         name:
           - flwr
           - tensorflow
         virtualenv: /home/pi/venvs/myenv
       become: no # Executa o pip como o usuário 'pi'
-
+      
+      # CORREÇÃO: Dá até 30 minutos (1800s) para a tarefa completar
+      async: 1800
+      # E verifica o status a cada 15 segundos
+      poll: 15
