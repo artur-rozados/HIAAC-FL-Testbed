@@ -18,3 +18,4 @@
       
       # Tarefa assíncrona: "dispare e esqueça"
       async: 10  # Dê 10 segundos para a tarefa iniciar
+      poll: 0    # Não espere pelo resultado, apenas continue
