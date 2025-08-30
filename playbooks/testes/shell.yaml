@@ -28,6 +28,8 @@
 
     - name: Instalar pacotes necessários no venv
       pip:
-        name: flwr
+        name:
+          - flwr
+          - tensorflow
         virtualenv: "{{ ansible_env.HOME }}/venvs/myenv"  # Instalar no ambiente virtual
 
