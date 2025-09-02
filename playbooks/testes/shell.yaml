@@ -7,6 +7,18 @@
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
+    # --- ETAPA 1: Lógica para descobrir dinamicamente o usuário e seu home dir ---
+    - name: Descobrir o home directory real do usuário de conexão
+      shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
+      register: user_home_dir_output
+      changed_when: false
+      become: no
+
+    - name: Definir uma variável de fato com o caminho correto
+      set_fact:
+        correct_user_home: "{{ user_home_dir_output.stdout }}"
+
+    # --- ETAPA 2: O restante do playbook agora usa as variáveis dinâmicas ---
     - name: Garantir dependências do sistema (Python e Pip)
       apt:
         name:
@@ -18,34 +30,33 @@
 
     - name: Criar o diretório para os ambientes virtuais
       file:
-        path: /home/pi/venvs
+        path: "{{ correct_user_home }}/venvs" # <-- GENERALIZADO
         state: directory
-        owner: pi
-        group: pi
+        owner: "{{ ansible_user }}"           # <-- GENERALIZADO
+        group: "{{ ansible_user }}"          # <-- GENERALIZADO
         mode: '0755'
 
     - name: Criar o ambiente virtual 'myenv'
       command:
-        cmd: "python3.11 -m venv /home/pi/venvs/myenv"
-        creates: /home/pi/venvs/myenv/bin/activate
-      become: no # Executa como 'pi'
+        cmd: "python3.11 -m venv {{ correct_user_home }}/venvs/myenv" # <-- GENERALIZADO
+        creates: "{{ correct_user_home }}/venvs/myenv/bin/activate"  # <-- GENERALIZADO
+      become: no # Executa como o usuário de conexão (ex: 'pi' ou 'jetson')
 
-    # --- TAREFA DE CORREÇÃO ADICIONADA AQUI ---
-    - name: Garantir que o usuário 'pi' seja o dono do diretório do venv
+    - name: Garantir que o usuário de conexão seja o dono do diretório do venv
       file:
-        path: /home/pi/venvs/myenv
+        path: "{{ correct_user_home }}/venvs/myenv" # <-- GENERALIZADO
         state: directory
-        owner: pi
-        group: pi
-        recurse: yes # Aplica a permissão a todos os arquivos e subpastas
-      # 'become: yes' é herdado do topo, o que é necessário aqui para mudar o dono de 'root' para 'pi'
+        owner: "{{ ansible_user }}"                # <-- GENERALIZADO
+        group: "{{ ansible_user }}"               # <-- GENERALIZADO
+        recurse: yes
+      # 'become: yes' é herdado do topo, necessário para mudar o dono se algo der errado
 
     - name: Instalar flwr e tensorflow (tarefa de longa duração)
       pip:
         name:
           - flwr
           - tensorflow
-        virtualenv: /home/pi/venvs/myenv
-      become: no # Executa como 'pi'
+        virtualenv: "{{ correct_user_home }}/venvs/myenv" # <-- GENERALIZADO
+      become: no # Executa como o usuário de conexão
       async: 1800
       poll: 15
