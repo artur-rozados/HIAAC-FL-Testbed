@@ -5,6 +5,9 @@
   # Elevando privilégios para o play inteiro, como no seu exemplo
   become: yes 
 
+  vars_files:
+    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+
   tasks:
     - name: 1. Mostrar os fatos do usuário de CONEXÃO
       debug:
