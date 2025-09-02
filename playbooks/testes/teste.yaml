@@ -1,59 +1,19 @@
 ---
 - hosts: Raspberry_Pi
-  become: yes
-  vars_files:
-    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+  become: yes # Essencial para replicar o ambiente que causa o problema original
 
   tasks:
-    # --- TAREFA DE CORREÇÃO (AGORA CORRETA) ---
-    - name: Descobrir o home directory real do usuário de conexão
-      # Trocamos 'command' por 'shell' para poder usar o pipe '|'
+    - name: 1. VERIFICAÇÃO -> Mostrar o fato problemático original (ansible_user_dir)
+      debug:
+        msg: "O fato original 'ansible_user_dir' está retornando: {{ ansible_user_dir }}"
+
+    - name: 2. LÓGICA CORRIGIDA -> Usar 'shell' para buscar o home dir
+      # Usamos 'shell' para que o pipe '|' seja interpretado corretamente
       shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
       register: user_home_dir_output
-      changed_when: false # Este comando não altera o estado do sistema
-      become: no          # Garantimos que rode como o usuário 'pi'
+      changed_when: false
+      become: no # Rodamos como o usuário 'pi' por segurança
 
-    - name: Definir uma variável de fato com o caminho correto
-      set_fact:
-        correct_user_home: "{{ user_home_dir_output.stdout }}"
-
-    - name: Garantir dependências do sistema (Python e Pip)
-      apt:
-        name:
-          - python3.11
-          - python3.11-venv
-          - python3-pip
-        state: present
-        update_cache: yes
-
-    - name: Criar o diretório para os ambientes virtuais
-      file:
-        path: "{{ correct_user_home }}/venvs"
-        state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0755'
-
-    - name: Criar o ambiente virtual 'myenv'
-      command:
-        cmd: "python3.11 -m venv {{ correct_user_home }}/venvs/myenv"
-        creates: "{{ correct_user_home }}/venvs/myenv/bin/activate"
-      become: no
-
-    - name: Garantir que o usuário de conexão seja o dono do diretório do venv
-      file:
-        path: "{{ correct_user_home }}/venvs/myenv"
-        state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        recurse: yes
-
-    - name: Instalar flwr e tensorflow (tarefa de longa duração)
-      pip:
-        name:
-          - flwr
-          - tensorflow
-        virtualenv: "{{ correct_user_home }}/venvs/myenv"
-      become: no
-      async: 1800
-      poll: 15
+    - name: 3. RESULTADO -> Exibir o que foi capturado pelo nosso comando
+      debug:
+        msg: "O caminho do home directory capturado pelo nosso comando foi: '{{ user_home_dir_output.stdout }}'. Se este valor for '/home/pi', a lógica está correta."
