@@ -1,31 +1,62 @@
 ---
 - hosts: Raspberry_Pi
-  # Forçando a conexão com seu usuário normal, não root
-  connection: local 
-  # Elevando privilégios para o play inteiro, como no seu exemplo
-  become: yes 
-
+  become: yes
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
-    - name: 1. Mostrar os fatos do usuário de CONEXÃO
-      debug:
-        msg:
-          - "O Ansible se conectou como: {{ ansible_user }}"
-          - "O home do usuário de conexão é: {{ ansible_user_dir }}"
-          - "Esta tarefa está rodando sem 'become' explícito, mas herda do play."
+    # --- TAREFA DE CORREÇÃO ADICIONADA AQUI ---
+    - name: Descobrir o home directory real do usuário de conexão
+      # Usamos 'getent' que consulta diretamente a base de dados de usuários
+      # É mais confiável que variáveis de ambiente
+      command: "getent passwd {{ ansible_user }} | cut -d: -f6"
+      register: user_home_dir_output
+      changed_when: false # Este comando não altera o estado do sistema
+      become: no          # Garantimos que rode como o usuário 'pi' para evitar qualquer problema
 
-    - name: 2. Mostrar quem realmente está executando o comando com 'become'
-      command: whoami
-      register: whoami_output
+    # A partir daqui, usaremos nossa variável 'user_home_dir' em vez de 'ansible_user_dir'
+    - name: Definir uma variável de fato com o caminho correto
+      set_fact:
+        # Extraímos o texto puro da saída do comando anterior
+        correct_user_home: "{{ user_home_dir_output.stdout }}"
 
-    - name: 3. Exibir o resultado do 'whoami'
-      debug:
-        msg: "O comando 'whoami' foi executado pelo usuário: {{ whoami_output.stdout }}"
+    - name: Garantir dependências do sistema (Python e Pip)
+      apt:
+        name:
+          - python3.11
+          - python3.11-venv
+          - python3-pip
+        state: present
+        update_cache: yes
 
-    - name: 4. Re-verificar os fatos para provar que não mudaram
-      debug:
-        msg:
-          - "Mesmo após uma tarefa com 'become', o fato 'ansible_user' AINDA É: {{ ansible_user }}"
-          - "E o 'ansible_user_dir' AINDA É: {{ ansible_user_dir }}"
+    - name: Criar o diretório para os ambientes virtuais
+      file:
+        path: "{{ correct_user_home }}/venvs" # <-- USANDO A VARIÁVEL CORRIGIDA
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+
+    - name: Criar o ambiente virtual 'myenv'
+      command:
+        cmd: "python3.11 -m venv {{ correct_user_home }}/venvs/myenv"
+        creates: "{{ correct_user_home }}/venvs/myenv/bin/activate"
+      become: no
+
+    - name: Garantir que o usuário de conexão seja o dono do diretório do venv
+      file:
+        path: "{{ correct_user_home }}/venvs/myenv"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+
+    - name: Instalar flwr e tensorflow (tarefa de longa duração)
+      pip:
+        name:
+          - flwr
+          - tensorflow
+        virtualenv: "{{ correct_user_home }}/venvs/myenv"
+      become: no
+      async: 1800
+      poll: 15
