@@ -1,0 +1,28 @@
+---
+- hosts: Raspberry_Pi
+  # Forçando a conexão com seu usuário normal, não root
+  connection: local 
+  # Elevando privilégios para o play inteiro, como no seu exemplo
+  become: yes 
+
+  tasks:
+    - name: 1. Mostrar os fatos do usuário de CONEXÃO
+      debug:
+        msg:
+          - "O Ansible se conectou como: {{ ansible_user }}"
+          - "O home do usuário de conexão é: {{ ansible_user_dir }}"
+          - "Esta tarefa está rodando sem 'become' explícito, mas herda do play."
+
+    - name: 2. Mostrar quem realmente está executando o comando com 'become'
+      command: whoami
+      register: whoami_output
+
+    - name: 3. Exibir o resultado do 'whoami'
+      debug:
+        msg: "O comando 'whoami' foi executado pelo usuário: {{ whoami_output.stdout }}"
+
+    - name: 4. Re-verificar os fatos para provar que não mudaram
+      debug:
+        msg:
+          - "Mesmo após uma tarefa com 'become', o fato 'ansible_user' AINDA É: {{ ansible_user }}"
+          - "E o 'ansible_user_dir' AINDA É: {{ ansible_user_dir }}"
