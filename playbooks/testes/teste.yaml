@@ -5,19 +5,16 @@
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
-    # --- TAREFA DE CORREÇÃO ADICIONADA AQUI ---
+    # --- TAREFA DE CORREÇÃO (AGORA CORRETA) ---
     - name: Descobrir o home directory real do usuário de conexão
-      # Usamos 'getent' que consulta diretamente a base de dados de usuários
-      # É mais confiável que variáveis de ambiente
-      command: "getent passwd {{ ansible_user }} | cut -d: -f6"
+      # Trocamos 'command' por 'shell' para poder usar o pipe '|'
+      shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
       register: user_home_dir_output
       changed_when: false # Este comando não altera o estado do sistema
-      become: no          # Garantimos que rode como o usuário 'pi' para evitar qualquer problema
+      become: no          # Garantimos que rode como o usuário 'pi'
 
-    # A partir daqui, usaremos nossa variável 'user_home_dir' em vez de 'ansible_user_dir'
     - name: Definir uma variável de fato com o caminho correto
       set_fact:
-        # Extraímos o texto puro da saída do comando anterior
         correct_user_home: "{{ user_home_dir_output.stdout }}"
 
     - name: Garantir dependências do sistema (Python e Pip)
@@ -31,7 +28,7 @@
 
     - name: Criar o diretório para os ambientes virtuais
       file:
-        path: "{{ correct_user_home }}/venvs" # <-- USANDO A VARIÁVEL CORRIGIDA
+        path: "{{ correct_user_home }}/venvs"
         state: directory
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
