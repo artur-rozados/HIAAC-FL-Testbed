@@ -2,21 +2,28 @@
 - hosts:
     - Raspberry_Pi
     - Jetsons
-  become: yes # Necessário para os comandos 'apt' e para corrigir permissões
+  become: yes
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
-    # --- ETAPA 1: Lógica para descobrir dinamicamente o usuário e seu home dir ---
+    # --- ETAPA 1: Lógica para descobrir dinamicamente o usuário, home e GRUPO ---
     - name: Descobrir o home directory real do usuário de conexão
       shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
       register: user_home_dir_output
       changed_when: false
       become: no
 
-    - name: Definir uma variável de fato com o caminho correto
+    - name: Descobrir o grupo primário real do usuário de conexão
+      shell: "id -gn {{ ansible_user }}" # <-- NOVA TAREFA ADICIONADA
+      register: user_group_output
+      changed_when: false
+      become: no
+
+    - name: Definir variáveis de fato com os caminhos e grupos corretos
       set_fact:
         correct_user_home: "{{ user_home_dir_output.stdout }}"
+        correct_user_group: "{{ user_group_output.stdout }}" # <-- NOVA VARIÁVEL
 
     # --- ETAPA 2: O restante do playbook agora usa as variáveis dinâmicas ---
     - name: Garantir dependências do sistema (Python e Pip)
@@ -30,33 +37,32 @@
 
     - name: Criar o diretório para os ambientes virtuais
       file:
-        path: "{{ correct_user_home }}/venvs" # <-- GENERALIZADO
+        path: "{{ correct_user_home }}/venvs"
         state: directory
-        owner: "{{ ansible_user }}"           # <-- GENERALIZADO
-        group: "{{ ansible_user }}"          # <-- GENERALIZADO
+        owner: "{{ ansible_user }}"
+        group: "{{ correct_user_group }}" # <-- CORRIGIDO
         mode: '0755'
 
     - name: Criar o ambiente virtual 'myenv'
       command:
-        cmd: "python3.11 -m venv {{ correct_user_home }}/venvs/myenv" # <-- GENERALIZADO
-        creates: "{{ correct_user_home }}/venvs/myenv/bin/activate"  # <-- GENERALIZADO
-      become: no # Executa como o usuário de conexão (ex: 'pi' ou 'jetson')
+        cmd: "python3.11 -m venv {{ correct_user_home }}/venvs/myenv"
+        creates: "{{ correct_user_home }}/venvs/myenv/bin/activate"
+      become: no
 
     - name: Garantir que o usuário de conexão seja o dono do diretório do venv
       file:
-        path: "{{ correct_user_home }}/venvs/myenv" # <-- GENERALIZADO
+        path: "{{ correct_user_home }}/venvs/myenv"
         state: directory
-        owner: "{{ ansible_user }}"                # <-- GENERALIZADO
-        group: "{{ ansible_user }}"               # <-- GENERALIZADO
+        owner: "{{ ansible_user }}"
+        group: "{{ correct_user_group }}" # <-- CORRIGIDO
         recurse: yes
-      # 'become: yes' é herdado do topo, necessário para mudar o dono se algo der errado
 
     - name: Instalar flwr e tensorflow (tarefa de longa duração)
       pip:
         name:
           - flwr
           - tensorflow
-        virtualenv: "{{ correct_user_home }}/venvs/myenv" # <-- GENERALIZADO
-      become: no # Executa como o usuário de conexão
+        virtualenv: "{{ correct_user_home }}/venvs/myenv"
+      become: no
       async: 1800
       poll: 15
