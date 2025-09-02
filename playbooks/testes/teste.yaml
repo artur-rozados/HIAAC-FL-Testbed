@@ -1,6 +1,8 @@
 ---
 - hosts: Raspberry_Pi
   become: yes # Essencial para replicar o ambiente que causa o problema original
+  vars_files:
+    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
     - name: 1. VERIFICAÇÃO -> Mostrar o fato problemático original (ansible_user_dir)
