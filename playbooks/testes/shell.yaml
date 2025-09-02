@@ -37,7 +37,7 @@
 
     - name: Criar o diretório para os ambientes virtuais
       file:
-        path: "{{ correct_user_home }}/venvs"
+        path: "{{ correct_user_home }}/FilesTestbed/venvs"
         state: directory
         owner: "{{ ansible_user }}"
         group: "{{ correct_user_group }}" # <-- CORRIGIDO
@@ -45,13 +45,13 @@
 
     - name: Criar o ambiente virtual 'myenv'
       command:
-        cmd: "python3.11 -m venv {{ correct_user_home }}/venvs/myenv"
-        creates: "{{ correct_user_home }}/venvs/myenv/bin/activate"
+        cmd: "python3.11 -m venv {{ correct_user_home }}/FilesTestbed/venvs/myenv"
+        creates: "{{ correct_user_home }}/FilesTestbed/venvs/myenv/bin/activate"
       become: no
 
     - name: Garantir que o usuário de conexão seja o dono do diretório do venv
       file:
-        path: "{{ correct_user_home }}/venvs/myenv"
+        path: "{{ correct_user_home }}/FilesTestbed/venvs/myenv"
         state: directory
         owner: "{{ ansible_user }}"
         group: "{{ correct_user_group }}" # <-- CORRIGIDO
@@ -62,7 +62,7 @@
         name:
           - flwr
           - tensorflow
-        virtualenv: "{{ correct_user_home }}/venvs/myenv"
+        virtualenv: "{{ correct_user_home }}/FilesTestbed/venvs/myenv"
       become: no
       async: 1800
       poll: 15

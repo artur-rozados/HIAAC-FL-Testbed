@@ -30,8 +30,7 @@
 
     - name: Garantir que o diretório do cliente exista no Pi
       file:
-        # Caminho explícito para a home do usuário 'pi'
-        path: "{{ correct_user_home }}/flower_client"
+        path: "{{ correct_user_home }}/FilesTestbed/flower_client"
         state: directory
         owner: "{{ ansible_user }}"
         group: "{{ correct_user_group }}" # <-- CORRIGIDO
@@ -39,9 +38,9 @@
 
     - name: Copiar o arquivo client.py para os Pis
       copy:
-        # Origem no seu laptop
+        # Origem no server
         src: "{{ lookup('env', 'HOME') }}/TESTBED/client.py"
-        dest: "{{ correct_user_home }}/client.py"
+        dest: "{{ correct_user_home }}/FilesTestbed/flower_client/client.py"
         owner: "{{ ansible_user }}"
         group: "{{ correct_user_group }}" # <-- CORRIGIDO
         mode: '0755'
