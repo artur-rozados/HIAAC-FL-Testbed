@@ -7,12 +7,42 @@
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
+
+    # --- ETAPA 1: Descoberta (sem alterações) ---
+    - name: Descobrir informações do usuário, home e grupo
+      block:
+        - shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
+          register: user_home_dir_output
+          changed_when: false
+          become: no
+
+        - shell: "id -gn {{ ansible_user }}"
+          register: user_group_output
+          changed_when: false
+          become: no
+
+        - set_fact:
+            correct_user_home: "{{ user_home_dir_output.stdout }}"
+            correct_user_group: "{{ user_group_output.stdout }}"
+
+    # --- ETAPA 2: Iniciar o cliente ---
+
+    - name: Garantir que o diretório do cliente/log exista
+      file:
+        # Garantimos que o diretório DENTRO de FilesTestbed exista
+        path: "{{ correct_user_home }}/FilesTestbed/flower_client"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ correct_user_group }}"
+        mode: '0755'
+
     - name: Iniciar o script do cliente Flower em modo assíncrono
       shell:
-        # CHAMADA DIRETA: Usamos o caminho completo para o Python do venv
-        cmd: "nohup /home/pi/venvs/myenv/bin/python client.py > /home/pi/flower_client/client.log 2>&1 &"
+        # <-- CORRIGIDO E CONSISTENTE: O log agora vai para a mesma pasta da aplicação
+        cmd: "nohup {{ correct_user_home }}/FilesTestbed/venvs/myenv/bin/python client.py > {{ correct_user_home }}/FilesTestbed/flower_client/client.log 2>&1 &"
         
-        chdir: /home/pi/flower_client
+        # <-- CORRIGIDO E CONSISTENTE: O diretório de trabalho é o mesmo do log
+        chdir: "{{ correct_user_home }}/FilesTestbed/flower_client"
       
       async: 10
       poll: 0
