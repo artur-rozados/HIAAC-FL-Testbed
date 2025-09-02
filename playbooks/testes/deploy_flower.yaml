@@ -1,27 +1,47 @@
 ---
-- hosts: Raspberry_Pi
+- hosts:
+    - Raspberry_Pi
+    - Jetsons
   become: yes
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
 
   tasks:
+
+    # --- ETAPA 1: Lógica para descobrir dinamicamente o usuário, home e GRUPO ---
+    - name: Descobrir o home directory real do usuário de conexão
+      shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
+      register: user_home_dir_output
+      changed_when: false
+      become: no
+
+    - name: Descobrir o grupo primário real do usuário de conexão
+      shell: "id -gn {{ ansible_user }}" # <-- NOVA TAREFA ADICIONADA
+      register: user_group_output
+      changed_when: false
+      become: no
+
+    - name: Definir variáveis de fato com os caminhos e grupos corretos
+      set_fact:
+        correct_user_home: "{{ user_home_dir_output.stdout }}"
+        correct_user_group: "{{ user_group_output.stdout }}"
+
+
+
     - name: Garantir que o diretório do cliente exista no Pi
       file:
         # Caminho explícito para a home do usuário 'pi'
-        path: /home/pi/flower_client
+        path: "{{ correct_user_home }}/flower_client"
         state: directory
-        # Define 'pi' como o dono, para evitar problemas de permissão
-        owner: pi
-        group: pi
+        owner: "{{ ansible_user }}"
+        group: "{{ correct_user_group }}" # <-- CORRIGIDO
         mode: '0755'
 
     - name: Copiar o arquivo client.py para os Pis
       copy:
         # Origem no seu laptop
         src: "{{ lookup('env', 'HOME') }}/TESTBED/client.py"
-        # Destino explícito na home do usuário 'pi'
-        dest: /home/pi/flower_client/client.py
-        # Define 'pi' como o dono do arquivo
-        owner: pi
-        group: pi
-        mode: '0644'
+        dest: "{{ correct_user_home }}/client.py"
+        owner: "{{ ansible_user }}"
+        group: "{{ correct_user_group }}" # <-- CORRIGIDO
+        mode: '0755'
