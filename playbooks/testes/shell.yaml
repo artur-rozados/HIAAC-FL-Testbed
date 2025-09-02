@@ -1,5 +1,7 @@
 ---
-- hosts: Raspberry_Pi
+- hosts:
+    - Raspberry_Pi
+    - Jetsons
   become: yes # Necessário para os comandos 'apt' e para corrigir permissões
   vars_files:
     - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
