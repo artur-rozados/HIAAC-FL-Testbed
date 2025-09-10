@@ -20,7 +20,7 @@ O objetivo principal é criar uma plataforma que simula **cenários de borda (_e
 
 
 
-###🕹️ Guia de Operação no Servidor Central
+### 🕹️ Guia de Operação no Servidor Central
 
 Após conectar-se ao Servidor Central via SSH, utilize este guia para interagir com o ambiente do testbed.
 
