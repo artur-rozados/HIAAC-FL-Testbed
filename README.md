@@ -1,6 +1,5 @@
 # Ansible-H.IAAC
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
-![Status](https://img.shields.io/badge/status-ativo-green)
 ![Ansible](https://img.shields.io/badge/Ansible-EE0000?logo=ansible&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-A22846?logo=raspberrypi&logoColor=white)
