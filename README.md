@@ -33,7 +33,7 @@ Após conectar-se ao Servidor Central via SSH, utilize este guia para interagir 
 A operação do testbed está dividida em dois diretórios principais na home do usuário (`~/`):
 
 * `~/TESTBED/` -> **Diretório de Operações.** Contém scripts de execução, configurações locais e o arquivo de senha do Ansible Vault.
-* `~/Ansible-H.IAAC/` -> **Diretório do Repositório.** Contém o clone do projeto Git com todos os playbooks, roles e a automação.
+* `~/HIAAC-FL-Testbed/` -> **Diretório do Repositório.** Contém o clone do projeto Git com todos os playbooks, roles e a automação.
 
 ### Executando Playbooks Ansible
 
@@ -41,7 +41,7 @@ Para provisionar ou gerenciar os nós do cluster, siga os passos abaixo. O pré-
 
 1.  **Navegue até o diretório do repositório:**
     ```bash
-    cd ~/Ansible-H.IAAC
+    cd ~/HIAAC-FL-Testbed
     ```
 
 2.  **Execute o playbook desejado:** Utilize a estrutura de comando a seguir, substituindo o caminho para o playbook alvo.

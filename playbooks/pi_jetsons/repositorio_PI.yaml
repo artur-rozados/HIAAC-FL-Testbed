@@ -5,7 +5,7 @@
 
   # Carrega o arquivo vault a partir do caminho correto
   vars_files:
-    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+    - "{{ lookup('env', 'HOME') }}/HIAAC-FL-Testbed/vault.yml"
 
   tasks:
 
@@ -20,7 +20,7 @@
 
   - name: Clonar repositório
     ansible.builtin.git:
-      repo: "https://github.com/artur-rozados/Ansible-H.IAAC.git"
+      repo: "https://github.com/artur-rozados/HIAAC-FL-Testbed.git"
       dest: "/home/pi/teste"
       version: main  # Garante que o repositório está no branch 'main' mais recente
       force: yes     # Força o checkout, descartando alterações locais nas Pis

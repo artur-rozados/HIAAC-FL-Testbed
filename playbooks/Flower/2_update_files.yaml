@@ -4,7 +4,7 @@
     - Jetsons
   become: yes
   vars_files:
-    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+    - "{{ lookup('env', 'HOME') }}/HIAAC-FL-Testbed/vault.yml"
 
   tasks:
 

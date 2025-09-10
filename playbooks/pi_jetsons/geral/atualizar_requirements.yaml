@@ -4,7 +4,7 @@
 
   # Carrega o arquivo vault a partir do caminho correto
   vars_files:
-    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+    - "{{ lookup('env', 'HOME') }}/HIAAC-FL-Testbed/vault.yml"
 
   tasks:
     - name: Atualizar o cache de pacotes (apt update)

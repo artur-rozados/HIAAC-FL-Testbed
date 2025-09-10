@@ -3,7 +3,7 @@
   become: yes
 
   vars_files:
-    - "{{ lookup('env', 'HOME') }}/Ansible-H.IAAC/vault.yml"
+    - "{{ lookup('env', 'HOME') }}/HIAAC-FL-Testbed/vault.yml"
 
   tasks:
     - name: Garantir que o Git está instalado
@@ -23,7 +23,7 @@
       ansible.builtin.git:
         repo: "https://github.com/artur-rozados/Ansible-H.IAAC.git"
         # Usamos a variável 'user_info' registrada na tarefa anterior
-        dest: "{{ user_info.home }}/Ansible-H.IAAC"
+        dest: "{{ user_info.home }}/HIAAC-FL-Testbed"
         version: main
         force: yes
         update: yes
