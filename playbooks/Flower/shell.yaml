@@ -59,7 +59,7 @@
 
     - name: Instalar requirements (tarefa de longa duração)
       pip:
-        name: "{{ lookup('file', lookup ('env', 'HOME') + '/TESTBED/requirements.txt') | splitlines }}"
+        name: "{{ (lookup('file', lookup ('env', 'HOME') + '/TESTBED/requirements.txt')).splitlines() }}"
         virtualenv: "{{ correct_user_home }}/FilesTestbed/venvs/myenv"
       become: no
       async: 1800
