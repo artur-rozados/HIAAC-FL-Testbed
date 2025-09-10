@@ -24,6 +24,10 @@ ansible_ssh_pass="{{ jetson_passwords[inventory_hostname] }}"
 # REGRA 3: A senha do sudo também vem do mesmo dicionário no Vault.
 ansible_become_pass="{{ jetson_passwords[inventory_hostname] }}"
 
+[Pi_router:vars]
+ansible_user=root
+ansible_become_pass="{{ pi_router_password }}"
+
 
 # =======================================================
 #               Lista de Hosts em cada Grupo
@@ -46,3 +50,7 @@ jetson3             ansible_host=10.10.10.233
 jetson4             ansible_host=10.10.10.234
 jetson5             ansible_host=10.10.10.235
 jetson6             ansible_host=10.10.10.236
+
+
+[Pi_router]
+10.10.10.1
