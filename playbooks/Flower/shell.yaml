@@ -57,11 +57,9 @@
         group: "{{ correct_user_group }}" # <-- CORRIGIDO
         recurse: yes
 
-    - name: Instalar flwr e tensorflow (tarefa de longa duração)
+    - name: Instalar requirements (tarefa de longa duração)
       pip:
-        name:
-          - flwr
-          - tensorflow
+        name: "{{ lookup('file', lookup ('env', 'HOME') + '/TESTBED/requirements.txt') | splitlines }}"
         virtualenv: "{{ correct_user_home }}/FilesTestbed/venvs/myenv"
       become: no
       async: 1800
