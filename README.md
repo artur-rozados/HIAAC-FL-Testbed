@@ -11,5 +11,5 @@ O objetivo principal é criar uma plataforma que simula **cenários de borda (_e
 ### 🏗️ Arquitetura do Ambiente
 
 <p align="center">
-  <img src="docs/assets/arquitetura_testbed.png" alt="Diagrama da arquitetura do testbed de Aprendizagem Federada">
+  <img src="Documentos/Assets/Diagrama_IC.drawio.png" alt="Diagrama da arquitetura do testbed de Aprendizagem Federada">
 </p>
